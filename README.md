@@ -10,4 +10,4 @@ token somewhere temporarily. then:
     npm install
     cp tgameboy-token.js.example ~/.tgameboy-token.js
     $EDITOR ~/.tgameboy-token.js
-    npm start
+    node index.js <path-to-rom>.gb
