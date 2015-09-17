@@ -1,0 +1,18 @@
+{
+  "name": "tgameboy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "/usr/bin/env node index.js"
+  },
+  "author": "FruitieX",
+  "license": "GPLv2",
+  "dependencies": {
+    "canvas": "^1.2.9",
+    "debug": "^2.2.0",
+    "emitter": "0.0.1",
+    "node-telegram-bot": "^0.1.2",
+    "underscore": "^1.8.3"
+  }
+}
