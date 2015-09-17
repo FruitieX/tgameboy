@@ -1,6 +1,6 @@
 # tgameboy
 
-silly gameboy telegram bot
+silly gameboy telegram bot, taking spam on telegram to whole new levels
 
 ## setup
 
