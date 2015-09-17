@@ -36,6 +36,8 @@ var canvasCtx = canvas.getContext('2d');
 var fontSize = 9;
 var font = 'sans-serif';
 
+var pendingScreenshots = {};
+
 var sendScreenshot = function(chat_id) {
     canvasCtx.fillStyle = 'black';
     canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
@@ -123,9 +125,15 @@ var bot = new Bot({
             if (!msg.text.indexOf('/' + name)) {
                 gb.JoyPadEvent(button.keycode, true);
                 button.depressFrame = frame + depressFrames;
-                setTimeout(function() {
-                    sendScreenshot(chatId);
-                }, screenshotInterval);
+
+                // only send screenshot if one isn't already being sent
+                if (!pendingScreenshots[chatId]) {
+                    pendingScreenshots[chatId] = setTimeout(function() {
+                        delete(pendingScreenshots[chatId]);
+                        sendScreenshot(chatId);
+                    }, screenshotInterval);
+                }
+
                 wasCommand = true;
                 return;
             }
