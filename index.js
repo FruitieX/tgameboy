@@ -12,7 +12,10 @@ var buttons = {
     start: {keycode: 7}
 }
 
-var chatMsgs = [];
+var chatMsgs = [{
+    nick: '<server>',
+    text: 'Server was restarted.'
+}];
 
 var _ = require('underscore');
 var fs = require('fs');
