@@ -6333,7 +6333,7 @@ GameBoyCore.prototype.processDraw = function (frameBuffer) {
     canvasData[canvasIndex++] = frameBuffer[bufferIndex++];
   }
   this.graphicsBlit();
-  this.drewFrame = false;
+  //this.drewFrame = false;
   if (this.opts.drawEvents) this.emit('draw');
 };
 GameBoyCore.prototype.swizzleFrameBuffer = function () {
