@@ -35,6 +35,7 @@ var canvas = new Canvas(160, 144 + chatHeight);
 var canvasCtx = canvas.getContext('2d');
 var fontSize = 9;
 var font = 'sans-serif';
+
 var sendScreenshot = function(chat_id) {
     canvasCtx.fillStyle = 'black';
     canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
@@ -79,12 +80,13 @@ var sendScreenshot = function(chat_id) {
     });
 
     var png = canvas.toBuffer();
-    fs.writeFileSync(frame + '.png', png);
+    var fileName = new Date().getTime() + '-frame' + frame + '.png';
+    fs.writeFileSync(fileName, png);
 
     bot.sendPhoto({
         chat_id: chat_id,
         files: {
-            photo: './' + frame + '.png'
+            photo: './' + fileName
         },
         reply_markup: {
             keyboard: [
