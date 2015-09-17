@@ -27,8 +27,57 @@ try {
 }
 
 var Bot = require('node-telegram-bot');
+var Canvas = require('canvas');
 
+var chatHeight = 160;
+var chatPadding = 1;
+var canvas = new Canvas(160, 144 + chatHeight);
+var canvasCtx = canvas.getContext('2d');
+var fontSize = 9;
+var font = 'sans-serif';
 var sendScreenshot = function(chat_id) {
+    canvasCtx.fillStyle = 'black';
+    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+    var imageData = gbCanvasCtx.getImageData(0, 0, gbCanvas.width, gbCanvas.height);
+    canvasCtx.putImageData(imageData, 0, canvas.height - 144);
+
+    canvasCtx.fillStyle = 'white';
+    canvasCtx.imageSmoothingEnabled = false;
+    var lineNum = 0;
+    _.each(chatMsgs, function(msg) {
+        canvasCtx.font = fontSize + 'px ' + font;
+
+        var maxWidth = 160 - 2 * chatPadding;
+
+        var lines = [];
+
+        var text = msg.text;
+        var words = text.split(' ');
+        var line = '';
+
+        lines.unshift({style: 'bold', text: msg.nick + ':'});
+
+        // word wrap
+        for(var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = canvasCtx.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                lines.unshift({text: line});
+                line = words[n] + ' ';
+            }
+            else {
+                line = testLine;
+            }
+        }
+        lines.unshift({text: line});
+
+        _.each(lines, function(line) {
+            canvasCtx.font = (line.style ? line.style + ' ' : '') + fontSize + 'px ' + font;
+            canvasCtx.fillText(line.text, chatPadding, canvas.height - 144 - fontSize * lineNum++ - chatPadding, maxWidth);
+        });
+    });
+
     var png = canvas.toBuffer();
     fs.writeFileSync(frame + '.png', png);
 
@@ -39,9 +88,8 @@ var sendScreenshot = function(chat_id) {
         },
         reply_markup: {
             keyboard: [
-                ['/b', '/up', '/a'],
-                ['/left', '/start', '/right'],
-                ['/select', '/down', '/screen']
+                ['/b',      '/up',      '/a',       '/select',  '/scr'],
+                ['/left',   '/down',    '/right',   '/start',   '/scr'],
             ],
             resize_keyboard: true
         }
@@ -61,9 +109,11 @@ var bot = new Bot({
         console.log('got msg: ' + msg.text);
 
         var chatId = msg.chat ? msg.chat.id : msg.from.id;
+        var wasCommand = false;
 
-        if (!msg.text.indexOf('/screen')) {
+        if (!msg.text.indexOf('/scr')) {
             sendScreenshot(chatId);
+            wasCommand = true;
             return;
         }
 
@@ -74,20 +124,29 @@ var bot = new Bot({
                 setTimeout(function() {
                     sendScreenshot(chatId);
                 }, screenshotInterval);
+                wasCommand = true;
                 return;
             }
         });
+
+        if (!wasCommand) {
+            chatMsgs.unshift({
+                nick: msg.from.first_name,
+                text: msg.text
+            });
+            chatMsgs = chatMsgs.slice(0, Math.floor((canvas.height - 160) / fontSize / 2));
+            sendScreenshot(chatId);
+        }
     }
 });
 
 bot.start();
 
-var Canvas = require('canvas');
 var gameboy = require('./gameboy');
 
-var canvas = new Canvas(160, 144);
-var ctx = canvas.getContext('2d');
-var gb = gameboy(canvas, rom, {
+var gbCanvas = new Canvas(160, 144);
+var gbCanvasCtx = gbCanvas.getContext('2d');
+var gb = gameboy(gbCanvas, rom, {
     colorizeGb: true,
     drawEvents: true
 });
