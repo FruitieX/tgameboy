@@ -11,3 +11,7 @@ token somewhere temporarily. then:
     cp tgameboy-token.js.example ~/.tgameboy-token.js
     $EDITOR ~/.tgameboy-token.js
     node index.js <path-to-rom>.gb
+
+## screenshot
+
+![Screenshot](screenshot.png)
