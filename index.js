@@ -26,8 +26,6 @@ try {
     process.exit(1);
 }
 
-var streamBuffers = require('stream-buffers');
-
 var Bot = require('node-telegram-bot');
 
 var sendScreenshot = function(chat_id) {
