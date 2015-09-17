@@ -16,7 +16,7 @@ var chatMsgs = [];
 
 var _ = require('underscore');
 var fs = require('fs');
-var token = require(process.env.HOME + '/.dagsen-bot-token.js');
+var token = require(process.env.HOME + '/.tgameboy-token.js');
 
 var romName = process.argv[2]
 try {
