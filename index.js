@@ -123,6 +123,8 @@ var bot = new Bot({
 
         _.each(buttons, function(button, name) {
             if (!msg.text.indexOf('/' + name)) {
+                lastActivity = new Date().getTime();
+
                 gb.JoyPadEvent(button.keycode, true);
                 button.depressFrame = frame + depressFrames;
 
@@ -190,6 +192,39 @@ try {
 var interval = setInterval(function() {
     gb.run();
 }, 0);
+
+var zlib = require('zlib');
+
+// backup game state every 10 minutes
+var saveStateInterval = 60 * 10;
+
+// but only if there was activity since the last backup
+var lastBackup = new Date().getTime();
+var lastActivity = 0;
+
+setInterval(function() {
+    if (lastActivity < lastBackup) {
+        return;
+    }
+
+    zlib.gzip(JSON.stringify(gb.saveState()), function(err, buffer) {
+        if (!err) {
+            var fileName = romName + '.' + new Date().getTime() + '.state.gz';
+            fs.writeFile(fileName, buffer, function(err) {
+                if (!err) {
+                    console.log('wrote game state backup successfully: ' + fileName);
+                    lastBackup = new Date();
+                } else {
+                    console.error('error while writing game state backup:');
+                    console.log(err);
+                }
+            });
+        } else {
+            console.error('error while compressing game state backup:');
+            console.error(err);
+        }
+    });
+}, saveStateInterval * 1000);
 
 process.on('SIGINT', function() {
     console.log('caught SIGINT, saving state and quitting...');
