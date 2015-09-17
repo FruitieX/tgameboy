@@ -113,7 +113,7 @@ var bot = new Bot({
 })
 .on('message', function(msg) {
     if (msg.text) {
-        console.log('got msg: ' + msg.text);
+        console.log(msg.from.first_name + ': ' + msg.text);
 
         var chatId = msg.chat ? msg.chat.id : msg.from.id;
         var wasCommand = false;
