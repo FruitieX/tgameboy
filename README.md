@@ -15,3 +15,8 @@ token somewhere temporarily. then:
 ## screenshot
 
 ![Screenshot](screenshot.png)
+
+## TODO
+
+* chat in game screenshot
+* rate limiting per room
