@@ -149,7 +149,7 @@ var bot = new Bot({
                 nick: msg.from.first_name,
                 text: msg.text
             });
-            chatMsgs = chatMsgs.slice(0, Math.floor((canvas.height - 160) / fontSize / 2));
+            chatMsgs = chatMsgs.slice(0, Math.floor((canvas.height - 160) / fontSize / 2) + 1);
             sendScreenshot(chatId);
         }
     }
