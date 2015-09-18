@@ -2,14 +2,14 @@ var screenshotInterval = 250;
 var depressFrames = 10;
 
 var buttons = {
-    right: {keycode: 0},
-    left: {keycode: 1},
+    rt: {keycode: 0},
+    lt: {keycode: 1},
     up: {keycode: 2},
-    down: {keycode: 3},
+    dn: {keycode: 3},
     a: {keycode: 4},
     b: {keycode: 5},
-    select: {keycode: 6},
-    start: {keycode: 7}
+    sel: {keycode: 6},
+    str: {keycode: 7}
 }
 
 var chatMsgs = [{
@@ -95,8 +95,8 @@ var sendScreenshot = function(chat_id) {
         },
         reply_markup: {
             keyboard: [
-                ['/b',      '/up',      '/a',       '/select',  '/scr'],
-                ['/left',   '/down',    '/right',   '/start',   '/scr'],
+                ['/b',      '/up',      '/a',       '/sel',     '/scr'],
+                ['/lt',     '/dn',      '/rt',      '/str',     '/scr'],
             ],
             resize_keyboard: true
         }
