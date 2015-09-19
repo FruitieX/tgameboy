@@ -24,6 +24,10 @@ token somewhere temporarily. then:
     $EDITOR ~/.tgameboy-token.js
     node index.js <path-to-rom>.gb
 
+now you should be able to send commands to your bot and invite it to groups in order to
+play with your friends! note that game state is shared across all groups/private chats
+that the bot is in.
+
 ## screenshot
 
 ![Screenshot](screenshot.png)
