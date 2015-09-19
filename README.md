@@ -1,6 +1,6 @@
 # tgameboy
 
-silly gameboy telegram bot, taking spam on telegram to whole new levels
+silly gameboy Telegram bot, taking spam on Telegram to whole new levels
 
 ## features
 
@@ -16,7 +16,7 @@ silly gameboy telegram bot, taking spam on telegram to whole new levels
 
 ## setup
 
-first create a new telegram bot with the `BotFather` telegram user. store your
+first create a new Telegram bot with the `BotFather` Telegram user. store your
 token somewhere temporarily. then:
 
     npm install
@@ -30,4 +30,4 @@ that the bot is in.
 
 ## screenshot
 
-![Screenshot](screenshot.png)
+![screenshot](screenshot.png)
