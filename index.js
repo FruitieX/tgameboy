@@ -1,5 +1,6 @@
+var commandWait = 50;
 var screenshotInterval = 250;
-var depressFrames = 10;
+var depressFrames = 10*6; // since the gameboy speed is now x6
 
 var buttons = {
     rt: {keycode: 0},
@@ -148,15 +149,29 @@ var bot = new Bot({
             if (!msg.text.indexOf('/' + name)) {
                 lastActivity = new Date().getTime();
 
-                gb.JoyPadEvent(button.keycode, true);
-                button.depressFrame = frame + depressFrames;
+                var times = parseInt(msg.text.match(/[1-9]{1}/));
+                if(!(times>0)){
+                    times = 1;
+                }
+                
+                for(var i = 0; i < times; i++){
+                    setTimeout(function() {
+                        console.log(i);
+                        gb.JoyPadEvent(button.keycode, true);
+                        button.depressFrame = frame + depressFrames;
+                        setTimeout(function(){
+                            gb.JoyPadEvent(button.keycode, false);
+                            button.depressFrame = 0;
+                        }, 10);
+                    }, (commandWait*i)*1);
+                }
 
                 // only send screenshot if one isn't already being sent
                 if (!pendingScreenshots[chatId]) {
                     pendingScreenshots[chatId] = setTimeout(function() {
                         delete(pendingScreenshots[chatId]);
                         sendScreenshot(chatId);
-                    }, screenshotInterval);
+                    }, screenshotInterval+commandWait*times);
                 }
 
                 wasCommand = true;
