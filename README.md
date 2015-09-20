@@ -24,9 +24,11 @@ token somewhere temporarily. then:
     $EDITOR ~/.tgameboy-token.js
     node index.js <path-to-rom>.gb
 
-now you should be able to send commands to your bot and invite it to groups in order to
-play with your friends! note that game state is shared across all groups/private chats
-that the bot is in.
+now you should be able to send the `/start` command to your bot and it will send back a keypad.
+`/stop` can be used to hide the keypad.
+
+you can invite the bot to groups in order to play with your friends!
+note that game state is shared across all groups/private chats that the bot is in.
 
 ## screenshot
 
