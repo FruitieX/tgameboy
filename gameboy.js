@@ -191,7 +191,7 @@ function GameBoyCore(canvas, ROMImage, opts) {
   this.channel2currentSampleRightTrimary = 0;
   this.mixerOutputCache = 0;
   //Pre-multipliers to cache some calculations:
-  this.emulatorSpeed = 1;
+  this.emulatorSpeed = 6;
   this.initializeTiming();
   //Audio generation counters:
   this.audioTicks = 0;        //Used to sample the audio system every x CPU instructions.
