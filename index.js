@@ -1,4 +1,4 @@
-var commandWait = 50;
+var commandWait = 50; // only measured by quesses!
 var screenshotInterval = 250;
 var depressFrames = 10*6; // since the gameboy speed is now x6
 
@@ -156,7 +156,6 @@ var bot = new Bot({
                 
                 for(var i = 0; i < times; i++){
                     setTimeout(function() {
-                        console.log(i);
                         gb.JoyPadEvent(button.keycode, true);
                         button.depressFrame = frame + depressFrames;
                         setTimeout(function(){
