@@ -41,7 +41,7 @@ var font = 'sans-serif';
 
 var pendingScreenshots = {};
 
-var sendScreenshot = function(chat_id) {
+var sendScreenshot = function(chat_id, keyboard_message_id, hideKeyboard) {
     canvasCtx.fillStyle = 'black';
     canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
     var imageData = gbCanvasCtx.getImageData(0, 0, gbCanvas.width, gbCanvas.height);
@@ -88,19 +88,31 @@ var sendScreenshot = function(chat_id) {
     var fileName = new Date().getTime() + '-frame' + frame + '.png';
     fs.writeFileSync(fileName, png);
 
-    bot.sendPhoto({
+    var data = {
         chat_id: chat_id,
         files: {
             photo: './' + fileName
-        },
-        reply_markup: {
+        }
+    };
+
+    if (keyboard_message_id) {
+        data.reply_to_message_id = keyboard_message_id;
+        data.reply_markup = {
             keyboard: [
                 ['/b',      '/up',      '/a',       '/sel',     '/scr'],
                 ['/lt',     '/dn',      '/rt',      '/str',     '/scr'],
             ],
-            resize_keyboard: true
+            resize_keyboard: true,
+            selective: true
+        };
+        if (hideKeyboard) {
+            delete(data.reply_markup.keyboard);
+            delete(data.reply_markup.resize_keyboard);
+            data.reply_markup.hide_keyboard = true;
         }
-    }, function(err, msg) {
+    }
+
+    bot.sendPhoto(data, function(err, msg) {
         if (err) {
             console.log('error on sendPhoto:');
             console.log(err);
@@ -119,8 +131,16 @@ var bot = new Bot({
         var wasCommand = false;
 
         if (!msg.text.indexOf('/scr')) {
-            sendScreenshot(chatId);
-            wasCommand = true;
+            return;
+        }
+
+        if (!msg.text.indexOf('/start')) {
+            sendScreenshot(chatId, msg.message_id, false);
+            return;
+        }
+
+        if (!msg.text.indexOf('/stop')) {
+            sendScreenshot(chatId, msg.message_id, true);
             return;
         }
 
@@ -147,7 +167,7 @@ var bot = new Bot({
         if (!wasCommand) {
             chatMsgs.unshift({
                 nick: msg.from.first_name,
-                text: msg.text
+                text: msg.text.replace(/\n/g, ' ')
             });
             chatMsgs = chatMsgs.slice(0, Math.floor((canvas.height - 160) / fontSize / 2) + 1);
             sendScreenshot(chatId);
@@ -192,6 +212,17 @@ try {
     console.log('could not find save state, not attempting state resume');
 }
 
+try {
+    chatMsgs = JSON.parse(fs.readFileSync(romName + '.chat'));
+    console.log('returning chat from ' + romName + '.chat');
+    chatMsgs.unshift({
+        nick: '<server>',
+        text: 'Server was restarted.'
+    });
+} catch(e) {
+    console.log('could not find backup of chat, not attempting state resume');
+}
+
 var interval = setInterval(function() {
     gb.run();
 }, 0);
@@ -231,7 +262,7 @@ setInterval(function() {
 
 process.on('SIGINT', function() {
     console.log('caught SIGINT, saving state and quitting...');
-    var saveState = JSON.stringify(gb.saveState());
-    fs.writeFileSync(romName + '.state', saveState);
+    fs.writeFileSync(romName + '.state', JSON.stringify(gb.saveState()));
+    fs.writeFileSync(romName + '.chat', JSON.stringify(chatMsgs));
     process.exit();
 });
