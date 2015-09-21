@@ -131,6 +131,7 @@ var bot = new Bot({
         var wasCommand = false;
 
         if (!msg.text.indexOf('/scr')) {
+            sendScreenshot(chatId);
             return;
         }
 
