@@ -29,7 +29,7 @@ try {
     process.exit(1);
 }
 
-var Bot = require('node-telegram-bot');
+var TelegramBot = require('node-telegram-bot-api');
 var Canvas = require('canvas');
 
 var chatHeight = 160;
@@ -40,6 +40,10 @@ var fontSize = 9;
 var font = 'sans-serif';
 
 var pendingScreenshots = {};
+
+var bot = new TelegramBot(token, {
+    polling: true
+});
 
 var sendScreenshot = function(chat_id, keyboard_message_id, hideKeyboard) {
     canvasCtx.fillStyle = 'black';
@@ -112,18 +116,10 @@ var sendScreenshot = function(chat_id, keyboard_message_id, hideKeyboard) {
         }
     }
 
-    bot.sendPhoto(data, function(err, msg) {
-        if (err) {
-            console.log('error on sendPhoto:');
-            console.log(err);
-        }
-    });
+    bot.sendPhoto(chat_id, `./${fileName}`, data);
 };
 
-var bot = new Bot({
-    token: token
-})
-.on('message', function(msg) {
+bot.on('message', function(msg) {
     if (msg.text) {
         console.log(msg.from.first_name + ': ' + msg.text);
 
@@ -175,8 +171,6 @@ var bot = new Bot({
         }
     }
 });
-
-bot.start();
 
 var gameboy = require('./gameboy');
 
